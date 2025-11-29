@@ -6,6 +6,8 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
     password: ''
   });
 
+  const API = import.meta.env.VITE_API_URL; // <-- ADDED THIS LINE
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -22,20 +24,27 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API}/api/auth/login`, {   // <-- UPDATED THIS LINE
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         throw new Error(data?.message || 'Login failed');
       }
+
       if (data?.token) {
         localStorage.setItem('token', data.token);
       }
-      if (typeof onAuthSuccess === 'function') onAuthSuccess();
-      else if (typeof onNavigate === 'function') onNavigate('explore');
+
+      if (typeof onAuthSuccess === 'function') 
+        onAuthSuccess();
+      else if (typeof onNavigate === 'function') 
+        onNavigate('explore');
+
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
@@ -45,22 +54,16 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 py-8 pt-24">
-      {/* Background gradient effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.1)_0%,_rgba(0,0,0,0)_70%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(236,72,153,0.1)_0%,_rgba(0,0,0,0)_50%)]"></div>
-      
-      {/* Main card container */}
+
       <div className="relative z-10 w-full max-w-md">
-        {/* Gradient border card */}
         <div className="relative p-8 bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-2xl">
-          {/* Gradient border effect */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 p-[2px]">
             <div className="absolute inset-0 rounded-2xl bg-black"></div>
           </div>
-          
-          {/* Card content */}
+
           <div className="relative z-10">
-            {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-white mb-2">
                 Welcome back to <span className="text-purple-400">SkillSwap</span>
@@ -70,12 +73,11 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
               </p>
             </div>
 
-            {/* Login form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
                 <div className="text-sm text-red-400">{error}</div>
               )}
-              {/* Email */}
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                   Email
@@ -92,7 +94,6 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
                 />
               </div>
 
-              {/* Password */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                   Password
@@ -109,7 +110,6 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
                 />
               </div>
 
-              {/* Forgot Password Link */}
               <div className="flex justify-end">
                 <button 
                   type="button"
@@ -119,7 +119,6 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
                 </button>
               </div>
 
-              {/* Login Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -129,7 +128,6 @@ const Login = ({ onNavigate, onAuthSuccess }) => {
               </button>
             </form>
 
-            {/* Register link */}
             <div className="mt-6 text-center">
               <p className="text-gray-400 text-sm">
                 Don't have an account?{' '}
