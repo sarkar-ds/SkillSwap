@@ -9,6 +9,8 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
     skillToLearn: ''
   });
 
+  const API = import.meta.env.VITE_API_URL; // <-- ADDED THIS LINE
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -26,26 +28,32 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
     setError('');
     setSuccess('');
     setLoading(true);
+
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch(`${API}/api/auth/register`, {   // <-- UPDATED API URL
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         throw new Error(data?.message || 'Registration failed');
       }
+
       if (data?.token) {
         localStorage.setItem('token', data.token);
       }
-      // If backend auto-logs in (token present), go to explore, else go to login
+
+      // Auto-login or redirect to login
       if (data?.token && typeof onAuthSuccess === 'function') {
         onAuthSuccess();
       } else if (typeof onNavigate === 'function') {
         setSuccess('Account created successfully. Redirecting to login...');
         setTimeout(() => onNavigate('login'), 800);
       }
+
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
@@ -55,22 +63,16 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 py-8 pt-24">
-      {/* Background gradient effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.1)_0%,_rgba(0,0,0,0)_70%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(236,72,153,0.1)_0%,_rgba(0,0,0,0)_50%)]"></div>
-      
-      {/* Main card container */}
+
       <div className="relative z-10 w-full max-w-md">
-        {/* Gradient border card */}
         <div className="relative p-8 bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-2xl">
-          {/* Gradient border effect */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 p-[2px]">
             <div className="absolute inset-0 rounded-2xl bg-black"></div>
           </div>
-          
-          {/* Card content */}
+
           <div className="relative z-10">
-            {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-white mb-2">
                 Create your Skill<span className="text-purple-400">Swap</span> Account
@@ -80,14 +82,10 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
               </p>
             </div>
 
-            {/* Registration form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div className="text-sm text-red-400">{error}</div>
-              )}
-              {success && (
-                <div className="text-sm text-green-400">{success}</div>
-              )}
+              {error && <div className="text-sm text-red-400">{error}</div>}
+              {success && <div className="text-sm text-green-400">{success}</div>}
+
               {/* Full Name */}
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-2">
@@ -118,7 +116,7 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                  placeholder="Enter your email address"
+                  placeholder="Enter your email"
                 />
               </div>
 
@@ -173,7 +171,6 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
                 />
               </div>
 
-              {/* Register Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -183,7 +180,6 @@ const Register = ({ onNavigate, onAuthSuccess }) => {
               </button>
             </form>
 
-            {/* Login link */}
             <div className="mt-6 text-center">
               <p className="text-gray-400 text-sm">
                 Already have an account?{' '}
