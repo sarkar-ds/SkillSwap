@@ -7,21 +7,40 @@ const Explore = ({ onNavigate }) => {
   const [search, setSearch] = useState('');
   const [skill, setSkill] = useState('');
 
-  const fetchUsers = async (params = {}) => {
-    setLoading(true);
-    setError('');
-    try {
-      const query = new URLSearchParams(params).toString();
-      const res = await fetch(`/api/users?${query}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || 'Failed to load users');
-      setUsers(data.users || []);
-    } catch (err) {
-      setError(err.message || 'Something went wrong');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchUsers = async (params = {}) => {
+  //   setLoading(true);
+  //   setError('');
+  //   try {
+  //     const query = new URLSearchParams(params).toString();
+  //     const res = await fetch(`/api/users?${query}`);
+  //     const data = await res.json();
+  //     if (!res.ok) throw new Error(data?.message || 'Failed to load users');
+  //     setUsers(data.users || []);
+  //   } catch (err) {
+  //     setError(err.message || 'Something went wrong');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const API = import.meta.env.VITE_API_URL;
+
+const fetchUsers = async (params = {}) => {
+  setLoading(true);
+  setError('');
+  try {
+    const query = new URLSearchParams(params).toString();
+    const res = await fetch(`${API}/api/users?${query}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.message || 'Failed to load users');
+    setUsers(data.users || []);
+  } catch (err) {
+    setError(err.message || 'Something went wrong');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Redirect to login if no token present
   useEffect(() => {
