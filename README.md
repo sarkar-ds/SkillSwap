@@ -356,9 +356,9 @@ Aspiring Software Engineer focused on building scalable full-stack applications 
 
 ### Connect With Me
 
-* Portfolio: `https://debashishsarkar.dev/`
-* LinkedIn: `https://www.linkedin.com/in/sarkar-ds`
-* GitHub: `https://github.com/sarkar-ds`
+* Portfolio: https://debashishsarkar.dev/
+* LinkedIn: https://www.linkedin.com/in/sarkar-ds
+* GitHub: https://github.com/sarkar-ds
 
 # License
 
